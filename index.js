@@ -10,6 +10,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const absPath = path.resolve('html');
 
+function checkRoute(req, res, next) {
+    const validRoutes = ['/', '/contact', '/about', '/login'];
+    if (validRoutes.includes(req.path)) {
+        next();
+    } else {
+        res.status(404).sendFile(absPath + '/404.html');
+    }
+}
+
+app.use(checkRoute);
+
 
 app.get('/', (req, res) => {
     res.send(home());
