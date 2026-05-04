@@ -1,5 +1,6 @@
 export function home() {
-    return "Welcome to Home Page with ES export way";
+    return `Welcome to Home Page with ES export way
+        <p><a href="/login">Login</a></p>`;
 }
 
 export function contact() {
