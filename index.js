@@ -5,6 +5,8 @@ import { Form } from './pages/form.js';
 import { fileURLToPath } from 'url';
 import { ageCheck } from './middleware/ageCheck.js';
 import { ipCheck } from './middleware/ipCheck.js';
+import morgan from 'morgan';
+import { errorHandler } from './middleware/errorHandler.js';
 const app = express();
 const port = 3000;
 // recreate __dirname
@@ -30,10 +32,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-
+app.use(morgan('dev'))
 //ageCheck middleware for only root '/' route
 app.get('/', ageCheck, (req, res) => {
-    console.log(req.query, '---------------------------------requestt from index')
     if (!req.query.age) {
         return res.redirect('/?age=20');
     }
@@ -55,19 +56,35 @@ app.get('/login', (req, res) => {
 });
 
 //ipCheck middleware for only /submit route
-app.post('/submit', ipCheck, (req, res) => {
-    console.log(req.body, 'form data');
-    res.send(`<h1>Form submitted.</h1>
+app.post('/submit', ipCheck, (req, res, next) => {
+    try {
+        if (!req.body.name) {
+            throw new Error("Name is required");
+        }
+        res.send(`<h1>Form submitted.</h1>
         <p>Name: ${req.body?.name || '-'}</p>
         <p>Email: ${req.body?.email || '-'}</p>
         <p>Password: ${req.body?.password || '-'}</p>
         <p><a href="/">Go to home</a></p>`);
+    } catch (err) {
+        return next(err);
+    }
+
 });
 
-// 404 handler
+app.get('/wait', (req, res) => {
+    setTimeout(() => {
+        res.send("<h1>Thanks for waiting!</h1>");
+    }, 5000);
+});
+
+// 404 handler (only for unknown routes)
 app.use((req, res) => {
     res.status(404).sendFile(absPath + '/404.html');
 });
+
+// error handler (for actual errors)
+app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
