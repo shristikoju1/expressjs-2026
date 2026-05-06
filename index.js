@@ -21,11 +21,17 @@ function checkRoute(req, res, next) {
     }
 }
 
-app.use(ipCheck);
+// app.use(ipCheck);
 // app.use(checkRoute);
 // app.use(ageCheck);
 
+/*----------built-in middleware for parsing json and urlencoded data----------*/
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
+
+//ageCheck middleware for only root '/' route
 app.get('/', ageCheck, (req, res) => {
     console.log(req.query, '---------------------------------requestt from index')
     if (!req.query.age) {
@@ -34,9 +40,6 @@ app.get('/', ageCheck, (req, res) => {
 
     res.send(home());
 });
-
-
-
 
 
 app.get('/contact', (req, res) => {
@@ -51,8 +54,13 @@ app.get('/login', (req, res) => {
     res.sendFile(absPath + '/login.html');
 });
 
-app.post('/submit', (req, res) => {
-    res.send(`Form submitted
+//ipCheck middleware for only /submit route
+app.post('/submit', ipCheck, (req, res) => {
+    console.log(req.body, 'form data');
+    res.send(`<h1>Form submitted.</h1>
+        <p>Name: ${req.body?.name || '-'}</p>
+        <p>Email: ${req.body?.email || '-'}</p>
+        <p>Password: ${req.body?.password || '-'}</p>
         <p><a href="/">Go to home</a></p>`);
 });
 
