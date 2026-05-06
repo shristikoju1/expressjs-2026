@@ -3,6 +3,8 @@ import path from 'path';
 import { home, about, contact } from './pages/home.js';
 import { Form } from './pages/form.js';
 import { fileURLToPath } from 'url';
+import { ageCheck } from './middleware/ageCheck.js';
+import { ipCheck } from './middleware/ipCheck.js';
 const app = express();
 const port = 3000;
 // recreate __dirname
@@ -19,12 +21,23 @@ function checkRoute(req, res, next) {
     }
 }
 
-app.use(checkRoute);
+app.use(ipCheck);
+// app.use(checkRoute);
+// app.use(ageCheck);
 
 
-app.get('/', (req, res) => {
+app.get('/', ageCheck, (req, res) => {
+    console.log(req.query, '---------------------------------requestt from index')
+    if (!req.query.age) {
+        return res.redirect('/?age=20');
+    }
+
     res.send(home());
 });
+
+
+
+
 
 app.get('/contact', (req, res) => {
     res.send(contact());
