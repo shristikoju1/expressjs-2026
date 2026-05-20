@@ -33,13 +33,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use(morgan('dev'))
+
+app.set('view engine', 'ejs');
+
 //ageCheck middleware for only root '/' route
 app.get('/', ageCheck, (req, res) => {
     if (!req.query.age) {
         return res.redirect('/?age=20');
     }
 
-    res.send(home());
+res.render('home', {
+        siteName: "espresso",
+        user: "Shristi"
+    });
 });
 
 
