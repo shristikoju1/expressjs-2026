@@ -96,6 +96,16 @@ app.get("/wait", (req, res) => {
   }, 5000);
 });
 
+app.get("/users", (req, res) => {
+  const users = [
+    { name: "Alice", age: 25 },
+    { name: "Bob", age: 30 },
+    { name: "Charlie", age: 35 },
+  ];
+  const isLogin = false; // Example variable to demonstrate conditional rendering
+  res.render("users", { users, isLogin });
+});
+
 // 404 handler (only for unknown routes)
 app.use((req, res) => {
   res.status(404).sendFile(absPath + "/404.html");

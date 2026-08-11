@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Users List !</title>
+  </head>
+  <body>
+    <h1>Users List</h1>
+    <ul>
+        <% users.forEach(user => { %>
+            <li><%= user.name %> - <%= user.age %> years old</li>
+        <% }); %>
+
+        <% for(let i = 0; i < users.length; i++) { %>
+            <li><%= users[i].name %> - <%= users[i].age %> years old</li>
+        <% } %>
+    </ul>
+
+    <% if (isLogin) { %>
+        <p>Welcome, you are logged in!</p>
+    <% } else { %>
+        <p>Please log in to see more details.</p>
+    <% } %>
+  </body>
+</html>
